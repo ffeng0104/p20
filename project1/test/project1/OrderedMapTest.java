@@ -16,10 +16,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author Faye
+ * @author Fei
  *
  */
 public class OrderedMapTest {
+	OrderedMap<String, String> map = new LinkedMap<String, String>();
 
 	/**
 	 * @throws java.lang.Exception
@@ -51,7 +52,6 @@ public class OrderedMapTest {
 
 	@Test
 	public void testFirstKeyPass() {
-		OrderedMap<String, String> map = new LinkedMap<String, String>();
 		map.put("ONE", "1");
 		map.put("TWO", "2");
 		map.put("THREE", "3");
@@ -59,27 +59,89 @@ public class OrderedMapTest {
 		assertEquals( "ONE", actual );
 	}
 	
+	@Test (expected = NoSuchElementException.class)
+	public void testFirstKeyException() {
+		map.firstKey();
+	}
+	
 	@Test
-	public void testFirstKeyFail() {
-		OrderedMap<String, String> map = new LinkedMap<String, String>();
+	public void testLastKeyPass() {
 		map.put("ONE", "1");
 		map.put("TWO", "2");
 		map.put("THREE", "3");
-		Object actual = map.firstKey();
+		Object actual = map.lastKey();
+		assertEquals( "THREE", actual );
+	}
+	
+	@Test (expected = NoSuchElementException.class)
+	public void testLastKeyException() {
+		map.lastKey();
+	}
+	
+	@Test
+	public void testNextKeyPass() {
+		map.put("ONE", "1");
+		map.put("TWO", "2");
+		map.put("THREE", "3");
+		Object actual = map.nextKey("ONE");
 		assertEquals( "TWO", actual );
 	}
 	
 	@Test
-	public void testFirstKeyError() {
-		OrderedMap<String, String> map = new LinkedMap<String, String>();
-		Object actual = map.firstKey();
-		assertEquals( "empty", actual );
+	public void testNextKeyAtEnd() {
+		map.put("ONE", "1");
+		map.put("TWO", "2");
+		map.put("THREE", "3");
+		Object actual = map.nextKey("THREE");
+		assertEquals( null, actual );
 	}
 	
-	@Test (expected = NoSuchElementException.class)
-	public void testFirstKeyException() {
-		OrderedMap<String, String> map = new LinkedMap<String, String>();
-		map.firstKey();
+	@Test 
+	public void testNextKeyNoMatch() {
+		map.put("ONE", "1");
+		map.put("TWO", "2");
+		map.put("THREE", "3");
+		Object actual = map.nextKey("FIVE");
+		assertEquals( null, actual );
+	}
+	
+	@Test 
+	public void testNextKeyEmptyMap() {
+		Object actual = map.nextKey("ONE");
+		assertEquals( null, actual );
+	}
+	
+	@Test
+	public void testPreviousKeyPass() {
+		map.put("ONE", "1");
+		map.put("TWO", "2");
+		map.put("THREE", "3");
+		Object actual = map.previousKey("THREE");
+		assertEquals( "TWO", actual );
+	}
+	
+	@Test
+	public void testPreviousKeyAtStart() {
+		map.put("ONE", "1");
+		map.put("TWO", "2");
+		map.put("THREE", "3");
+		Object actual = map.previousKey("ONE");
+		assertEquals( null, actual );
+	}
+	
+	@Test 
+	public void testPreviousKeyNoMatch() {
+		map.put("ONE", "1");
+		map.put("TWO", "2");
+		map.put("THREE", "3");
+		Object actual = map.previousKey("FIVE");
+		assertEquals( null, actual );
+	}
+	
+	@Test 
+	public void testPreviousKeyEmptyMap() {
+		Object actual = map.previousKey("ONE");
+		assertEquals( null, actual );
 	}
 
 }
